@@ -142,13 +142,14 @@ func (e *Syncing) UnmarshalJSON(bytes []byte) error {
 	return nil
 }
 
+// EthFeeHistoryResult Fee history results. feeHistoryResults
 type EthFeeHistoryResult struct {
 	OldestBlock   string     `json:"oldestBlock"`   // Lowest number block of returned range. oldestBlock
 	BaseFeePerGas []string   `json:"baseFeePerGas"` // An array of block base fees per gas. This includes the next block after the newest of the returned range, because this value can be derived from the newest block. Zeroes are returned for pre-EIP-1559 blocks. baseFeePerGasArray[hex encoded unsigned integer]
 	Reward        [][]string `json:"reward"`        // A two-dimensional array of effective priority fees per gas at the requested block percentiles. rewardArray[rewardPercentile]
-} // Fee history results. feeHistoryResults
+}
 
-//  Filter results
+// EthGetTransactionReceiptResult Filter results [Receipt info]
 type EthGetTransactionReceiptResult struct {
 	TransactionIndex  string `json:"transactionIndex"`  //  transaction index
 	BlockHash         string `json:"blockHash"`         //  block hash
@@ -161,7 +162,9 @@ type EthGetTransactionReceiptResult struct {
 	GasUsed           string `json:"gasUsed"`           //  gasUsed
 	ContractAddress   string `json:"contractAddress"`   //  contract address
 	Logs              []Log  `json:"logs"`              //  logs[log]
-} //  Receipt info
+}
+
+// Block object
 type Block struct {
 	Number           *string      `json:"number"`           //  Number
 	Hash             *string      `json:"hash"`             //  keccak
@@ -184,18 +187,21 @@ type Block struct {
 	BaseFeePerGas    string       `json:"baseFeePerGas"`    //  Base fee per gas
 	ReceiptsRoot     string       `json:"receiptsRoot"`     //  Receipts root
 	MixHash          string       `json:"mixHash"`          //  Mix hash
-} //  Block object
+}
+
+// TransactionObjectWithSender Transaction object with sender
 type TransactionObjectWithSender struct {
 	From string `json:"from"` //  from
 	Transactions
-} //  Transaction object with sender
+}
 
+// Filter
 type Filter struct {
 	FromBlock string    `json:"fromBlock"` //  from block
 	ToBlock   string    `json:"toBlock"`   //  to block
 	Address   StringArr `json:"address"`   //  Address(es) Address|Addresses[hex encoded address]
 	Topics    []string  `json:"topics"`    //  Topics[Topic]
-} //  filter
+}
 type Log struct {
 	Topics           []string `json:"topics"`           //  topics[Topic]
 	LogIndex         string   `json:"logIndex"`         //  log index
@@ -207,10 +213,12 @@ type Log struct {
 	Removed          bool     `json:"removed"`          //  removed
 	TransactionIndex string   `json:"transactionIndex"` //  transaction index
 }
+
+// LogResult Filter results
 type LogResult struct {
 	Arr  []string // new block hashes[32 byte hex value]  ||  new transaction hashes[32 byte hex value]
 	Logs []Log    // new logs[log]
-} //  Filter results
+}
 
 func (l *LogResult) UnmarshalJSON(bytes []byte) error {
 	err := json.Unmarshal(bytes, &l.Arr)
@@ -227,10 +235,11 @@ func (l LogResult) MarshalJSON() ([]byte, error) {
 	return json.Marshal(l.Arr)
 }
 
+// TransactionInformation Transaction information
 type TransactionInformation struct {
 	Hash             string `json:"hash"`             //  transaction hash
 	TransactionIndex string `json:"transactionIndex"` //  transaction index
 	BlockHash        string `json:"blockHash"`        //  block hash
 	BlockNumber      string `json:"blockNumber"`      //  block number
 	From             string `json:"from"`             //  from address
-} //  Transaction information
+}

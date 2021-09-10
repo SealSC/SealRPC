@@ -4,20 +4,21 @@ import (
 	"github.com/ybbus/jsonrpc/v2"
 )
 
-type EthRPCClient struct {
+type JsonRPCClient struct {
 	c jsonrpc.RPCClient
 }
 
-func NewEthRPCClient(rpcURL string) *EthRPCClient {
+//NewJsonRPCClient Create a NewJsonRPCClient for JsonRPCURL
+func NewJsonRPCClient(rpcURL string) *JsonRPCClient {
 	rpcClient := jsonrpc.NewClient(rpcURL)
-	return &EthRPCClient{c: rpcClient}
+	return &JsonRPCClient{c: rpcClient}
 }
 
 // EthGetBlockByHash Returns information about a block by hash.
 // 按哈希返回有关块的信息。
 // BlockHash:32 byte hex value
 // HydratedTransactions:hydrated
-func (e *EthRPCClient) EthGetBlockByHash(BlockHash string, HydratedTransactions bool) (result Block, err error) {
+func (e *JsonRPCClient) EthGetBlockByHash(BlockHash string, HydratedTransactions bool) (result Block, err error) {
 	err = e.c.CallFor(&result, "eth_getBlockByHash", BlockHash, HydratedTransactions)
 	return
 }
@@ -26,7 +27,7 @@ func (e *EthRPCClient) EthGetBlockByHash(BlockHash string, HydratedTransactions 
 // 按编号返回有关块的信息。
 // BlockNumber:hex encoded unsigned integer
 // HydratedTransactions:hydrated
-func (e *EthRPCClient) EthGetBlockByNumber(BlockNumber string, HydratedTransactions bool) (result Block, err error) {
+func (e *JsonRPCClient) EthGetBlockByNumber(BlockNumber string, HydratedTransactions bool) (result Block, err error) {
 	err = e.c.CallFor(&result, "eth_getBlockByNumber", BlockNumber, HydratedTransactions)
 	return
 }
@@ -35,7 +36,7 @@ func (e *EthRPCClient) EthGetBlockByNumber(BlockNumber string, HydratedTransacti
 // 从匹配给定块哈希块返回块交易的数量。
 // BlockHash:32 byte hex value
 // Return: Transaction count[hex encoded unsigned integer]
-func (e *EthRPCClient) EthGetBlockTransactionCountByHash(BlockHash string) (result []string, err error) {
+func (e *JsonRPCClient) EthGetBlockTransactionCountByHash(BlockHash string) (result []string, err error) {
 	err = e.c.CallFor(&result, "eth_getBlockTransactionCountByHash", BlockHash)
 	return
 }
@@ -44,7 +45,7 @@ func (e *EthRPCClient) EthGetBlockTransactionCountByHash(BlockHash string) (resu
 // 返回块中与给定块号匹配的交易数。
 // BlockNumber:hex encoded unsigned integer
 // Return: Transaction count[hex encoded unsigned integer]
-func (e *EthRPCClient) EthGetBlockTransactionCountByNumber(BlockNumber string) (result []string, err error) {
+func (e *JsonRPCClient) EthGetBlockTransactionCountByNumber(BlockNumber string) (result []string, err error) {
 	err = e.c.CallFor(&result, "eth_getBlockTransactionCountByNumber", BlockNumber)
 	return
 }
@@ -53,7 +54,7 @@ func (e *EthRPCClient) EthGetBlockTransactionCountByNumber(BlockNumber string) (
 // 从与给定块哈希匹配的块返回块中的uncles。
 // BlockHash:32 byte hex value
 // Return: Uncle count[hex encoded unsigned integer]
-func (e *EthRPCClient) EthGetUncleCountByBlockHash(BlockHash string) (result []string, err error) {
+func (e *JsonRPCClient) EthGetUncleCountByBlockHash(BlockHash string) (result []string, err error) {
 	err = e.c.CallFor(&result, "eth_getUncleCountByBlockHash", BlockHash)
 	return
 }
@@ -62,7 +63,7 @@ func (e *EthRPCClient) EthGetUncleCountByBlockHash(BlockHash string) (result []s
 // 返回块中与给定块号匹配的交易数。
 // BlockNumber:hex encoded unsigned integer
 // Return: Uncle count[hex encoded unsigned integer]
-func (e *EthRPCClient) EthGetUncleCountByBlockNumber(BlockNumber string) (result []string, err error) {
+func (e *JsonRPCClient) EthGetUncleCountByBlockNumber(BlockNumber string) (result []string, err error) {
 	err = e.c.CallFor(&result, "eth_getUncleCountByBlockNumber", BlockNumber)
 	return
 }
@@ -70,14 +71,14 @@ func (e *EthRPCClient) EthGetUncleCountByBlockNumber(BlockNumber string) (result
 // EthProtocolVersion Returns the current ethereum protocol version.
 // 返回当前以太坊协议版本。
 // Return: version
-func (e *EthRPCClient) EthProtocolVersion() (result string, err error) {
+func (e *JsonRPCClient) EthProtocolVersion() (result string, err error) {
 	err = e.c.CallFor(&result, "eth_protocolVersion")
 	return
 }
 
 // EthSyncing Returns an object with data about the sync status or false.
 // 返回一个对象，其中包含有关同步状态的数据或false。
-func (e *EthRPCClient) EthSyncing() (result Syncing, err error) {
+func (e *JsonRPCClient) EthSyncing() (result Syncing, err error) {
 	err = e.c.CallFor(&result, "eth_syncing")
 	return
 }
@@ -85,7 +86,7 @@ func (e *EthRPCClient) EthSyncing() (result Syncing, err error) {
 // EthCoinbase Returns the client coinbase address.
 // 返回客户端coinbase地址。
 // Return: hex encoded address
-func (e *EthRPCClient) EthCoinbase() (result string, err error) {
+func (e *JsonRPCClient) EthCoinbase() (result string, err error) {
 	err = e.c.CallFor(&result, "eth_coinbase")
 	return
 }
@@ -93,7 +94,7 @@ func (e *EthRPCClient) EthCoinbase() (result string, err error) {
 // EthAccounts Returns a list of addresses owned by client.
 // 返回客户端拥有的地址列表。
 // Returns: Accounts[hex encoded address]
-func (e *EthRPCClient) EthAccounts() (result []string, err error) {
+func (e *JsonRPCClient) EthAccounts() (result []string, err error) {
 	err = e.c.CallFor(&result, "eth_accounts")
 	return
 }
@@ -101,7 +102,7 @@ func (e *EthRPCClient) EthAccounts() (result []string, err error) {
 // EthBlockNumber Returns the number of most recent block.
 // 返回最近的块数。
 // Return: hex encoded unsigned integer
-func (e *EthRPCClient) EthBlockNumber() (result string, err error) {
+func (e *JsonRPCClient) EthBlockNumber() (result string, err error) {
 	err = e.c.CallFor(&result, "eth_blockNumber")
 	return
 }
@@ -110,7 +111,7 @@ func (e *EthRPCClient) EthBlockNumber() (result string, err error) {
 // 立即执行新的消息调用，而不在块链上创建事务。
 // Transaction:Transaction object with sender
 // Return: hex encoded bytes
-func (e *EthRPCClient) EthCall(Transaction TransactionObjectWithSender) (result string, err error) {
+func (e *JsonRPCClient) EthCall(Transaction TransactionObjectWithSender) (result string, err error) {
 	err = e.c.CallFor(&result, "eth_call", Transaction)
 	return
 }
@@ -119,7 +120,7 @@ func (e *EthRPCClient) EthCall(Transaction TransactionObjectWithSender) (result 
 // 生成并返回允许交易完成所需的天然气量的估计值。
 // Transaction:Transaction object with sender
 // Return: hex encoded unsigned integer
-func (e *EthRPCClient) EthEstimateGas(Transaction TransactionObjectWithSender) (result string, err error) {
+func (e *JsonRPCClient) EthEstimateGas(Transaction TransactionObjectWithSender) (result string, err error) {
 	err = e.c.CallFor(&result, "eth_estimateGas", Transaction)
 	return
 }
@@ -127,7 +128,7 @@ func (e *EthRPCClient) EthEstimateGas(Transaction TransactionObjectWithSender) (
 // EthGasPrice Returns the current price per gas in wei.
 // 返回每种气体的当前价格（单位：wei）。
 // Return: Gas price
-func (e *EthRPCClient) EthGasPrice() (result string, err error) {
+func (e *JsonRPCClient) EthGasPrice() (result string, err error) {
 	err = e.c.CallFor(&result, "eth_gasPrice")
 	return
 }
@@ -137,7 +138,7 @@ func (e *EthRPCClient) EthGasPrice() (result string, err error) {
 // BlockCount:hex encoded unsigned integer
 // NewestBlock:Block number or tag
 // RewardPercentiles:rewardPercentiles
-func (e *EthRPCClient) EthFeeHistory(BlockCount string, NewestBlock string, RewardPercentiles []int) (result EthFeeHistoryResult, err error) {
+func (e *JsonRPCClient) EthFeeHistory(BlockCount string, NewestBlock string, RewardPercentiles []int) (result EthFeeHistoryResult, err error) {
 	err = e.c.CallFor(&result, "eth_feeHistory", BlockCount, NewestBlock, RewardPercentiles)
 	return
 }
@@ -146,7 +147,7 @@ func (e *EthRPCClient) EthFeeHistory(BlockCount string, NewestBlock string, Rewa
 // 根据过滤器选项创建过滤器对象，以在状态更改（日志）时发出通知。
 // Filter:filter
 // Return: hex encoded unsigned integer
-func (e *EthRPCClient) EthNewFilter(Filter Filter) (result string, err error) {
+func (e *JsonRPCClient) EthNewFilter(Filter Filter) (result string, err error) {
 	err = e.c.CallFor(&result, "eth_newFilter", Filter)
 	return
 }
@@ -154,7 +155,7 @@ func (e *EthRPCClient) EthNewFilter(Filter Filter) (result string, err error) {
 // EthNewBlockFilter Creates a filter in the node, to notify when a new block arrives.
 // 在节点中创建过滤器，以在新块到达时通知。
 // Return: hex encoded unsigned integer
-func (e *EthRPCClient) EthNewBlockFilter() (result string, err error) {
+func (e *JsonRPCClient) EthNewBlockFilter() (result string, err error) {
 	err = e.c.CallFor(&result, "eth_newBlockFilter")
 	return
 }
@@ -162,7 +163,7 @@ func (e *EthRPCClient) EthNewBlockFilter() (result string, err error) {
 // EthNewPendingTransactionFilter Creates a filter in the node, to notify when new pending transactions arrive.
 // 在节点中创建筛选器，以便在新的挂起事务到达时通知。
 // Return: hex encoded unsigned integer
-func (e *EthRPCClient) EthNewPendingTransactionFilter() (result string, err error) {
+func (e *JsonRPCClient) EthNewPendingTransactionFilter() (result string, err error) {
 	err = e.c.CallFor(&result, "eth_newPendingTransactionFilter")
 	return
 }
@@ -170,7 +171,7 @@ func (e *EthRPCClient) EthNewPendingTransactionFilter() (result string, err erro
 // EthUninstallFilter Uninstalls a filter with given id.
 // 卸载具有给定id的筛选器。
 // FilterIdentifier:hex encoded unsigned integer
-func (e *EthRPCClient) EthUninstallFilter(FilterIdentifier string) (result bool, err error) {
+func (e *JsonRPCClient) EthUninstallFilter(FilterIdentifier string) (result bool, err error) {
 	err = e.c.CallFor(&result, "eth_uninstallFilter", FilterIdentifier)
 	return
 }
@@ -178,7 +179,7 @@ func (e *EthRPCClient) EthUninstallFilter(FilterIdentifier string) (result bool,
 // EthGetFilterChanges Polling method for a filter, which returns an array of logs which occurred since last poll.
 // 筛选器的轮询方法，该方法返回自上次轮询以来发生的日志数组。
 // FilterIdentifier:hex encoded unsigned integer
-func (e *EthRPCClient) EthGetFilterChanges(FilterIdentifier string) (result LogResult, err error) {
+func (e *JsonRPCClient) EthGetFilterChanges(FilterIdentifier string) (result LogResult, err error) {
 	err = e.c.CallFor(&result, "eth_getFilterChanges", FilterIdentifier)
 	return
 }
@@ -186,7 +187,7 @@ func (e *EthRPCClient) EthGetFilterChanges(FilterIdentifier string) (result LogR
 // EthGetFilterLogs Returns an array of all logs matching filter with given id.
 // 返回与给定id的筛选器匹配的所有日志的数组。
 // FilterIdentifier:hex encoded unsigned integer
-func (e *EthRPCClient) EthGetFilterLogs(FilterIdentifier string) (result LogResult, err error) {
+func (e *JsonRPCClient) EthGetFilterLogs(FilterIdentifier string) (result LogResult, err error) {
 	err = e.c.CallFor(&result, "eth_getFilterLogs", FilterIdentifier)
 	return
 }
@@ -194,7 +195,7 @@ func (e *EthRPCClient) EthGetFilterLogs(FilterIdentifier string) (result LogResu
 // EthGetLogs Returns an array of all logs matching filter with given id.
 // 返回与给定id的筛选器匹配的所有日志的数组。
 // Filter:filter
-func (e *EthRPCClient) EthGetLogs(Filter Filter) (result LogResult, err error) {
+func (e *JsonRPCClient) EthGetLogs(Filter Filter) (result LogResult, err error) {
 	err = e.c.CallFor(&result, "eth_getLogs", Filter)
 	return
 }
@@ -202,7 +203,7 @@ func (e *EthRPCClient) EthGetLogs(Filter Filter) (result LogResult, err error) {
 // EthMining Returns whether the client is actively mining new blocks.
 // 返回客户端是否正在积极挖掘新块
 // Return: miningStatus
-func (e *EthRPCClient) EthMining() (result bool, err error) {
+func (e *JsonRPCClient) EthMining() (result bool, err error) {
 	err = e.c.CallFor(&result, "eth_mining")
 	return
 }
@@ -210,7 +211,7 @@ func (e *EthRPCClient) EthMining() (result bool, err error) {
 // EthHashrate Returns the number of hashes per second that the node is mining with.
 // 返回节点每秒使用的哈希数。
 // Return: Hashrate
-func (e *EthRPCClient) EthHashrate() (result string, err error) {
+func (e *JsonRPCClient) EthHashrate() (result string, err error) {
 	err = e.c.CallFor(&result, "eth_hashrate")
 	return
 }
@@ -218,7 +219,7 @@ func (e *EthRPCClient) EthHashrate() (result string, err error) {
 // EthGetWork Returns the hash of the current block, the seedHash, and the boundary condition to be met (“target”).
 // 返回当前块的散列、种子散列和要满足的边界条件（“目标”）。
 // Return: Proof-of-work hash
-func (e *EthRPCClient) EthGetWork() (result []string, err error) {
+func (e *JsonRPCClient) EthGetWork() (result []string, err error) {
 	err = e.c.CallFor(&result, "eth_getWork")
 	return
 }
@@ -228,7 +229,7 @@ func (e *EthRPCClient) EthGetWork() (result []string, err error) {
 // ProofOfWorkHash:32 hex encoded bytes
 // SeedHash:32 hex encoded bytes
 // Difficulty:32 hex encoded bytes
-func (e *EthRPCClient) EthSubmitWork(ProofOfWorkHash string, SeedHash string, Difficulty string) (result bool, err error) {
+func (e *JsonRPCClient) EthSubmitWork(ProofOfWorkHash string, SeedHash string, Difficulty string) (result bool, err error) {
 	err = e.c.CallFor(&result, "eth_submitWork", ProofOfWorkHash, SeedHash, Difficulty)
 	return
 }
@@ -237,7 +238,7 @@ func (e *EthRPCClient) EthSubmitWork(ProofOfWorkHash string, SeedHash string, Di
 // 用于提交挖掘哈希率。
 // Hashrate:32 hex encoded bytes
 // ID:32 hex encoded bytes
-func (e *EthRPCClient) EthSubmitHashrate(Hashrate string, ID string) (result bool, err error) {
+func (e *JsonRPCClient) EthSubmitHashrate(Hashrate string, ID string) (result bool, err error) {
 	err = e.c.CallFor(&result, "eth_submitHashrate", Hashrate, ID)
 	return
 }
@@ -247,7 +248,7 @@ func (e *EthRPCClient) EthSubmitHashrate(Hashrate string, ID string) (result boo
 // Address:hex encoded address
 // Message:hex encoded bytes
 // Return: 65 hex encoded bytes
-func (e *EthRPCClient) EthSign(Address string, Message string) (result string, err error) {
+func (e *JsonRPCClient) EthSign(Address string, Message string) (result string, err error) {
 	err = e.c.CallFor(&result, "eth_sign", Address, Message)
 	return
 }
@@ -256,7 +257,7 @@ func (e *EthRPCClient) EthSign(Address string, Message string) (result string, e
 // 返回由指定帐户签名的RLP编码事务。
 // Transaction:Transaction object with sender
 // Return: hex encoded bytes
-func (e *EthRPCClient) EthSignTransaction(Transaction TransactionObjectWithSender) (result string, err error) {
+func (e *JsonRPCClient) EthSignTransaction(Transaction TransactionObjectWithSender) (result string, err error) {
 	err = e.c.CallFor(&result, "eth_signTransaction", Transaction)
 	return
 }
@@ -266,7 +267,7 @@ func (e *EthRPCClient) EthSignTransaction(Transaction TransactionObjectWithSende
 // Address:hex encoded address
 // Block:Block number or tag
 // Return: hex encoded unsigned integer
-func (e *EthRPCClient) EthGetBalance(Address string, Block string) (result string, err error) {
+func (e *JsonRPCClient) EthGetBalance(Address string, Block string) (result string, err error) {
 	err = e.c.CallFor(&result, "eth_getBalance", Address, Block)
 	return
 }
@@ -277,7 +278,7 @@ func (e *EthRPCClient) EthGetBalance(Address string, Block string) (result strin
 // StorageSlot:hex encoded unsigned integer
 // Block:Block number or tag
 // Return: hex encoded bytes
-func (e *EthRPCClient) EthGetStorage(Address string, StorageSlot string, Block string) (result string, err error) {
+func (e *JsonRPCClient) EthGetStorage(Address string, StorageSlot string, Block string) (result string, err error) {
 	err = e.c.CallFor(&result, "eth_getStorage", Address, StorageSlot, Block)
 	return
 }
@@ -287,7 +288,7 @@ func (e *EthRPCClient) EthGetStorage(Address string, StorageSlot string, Block s
 // Address:hex encoded address
 // Block:Block number or tag
 // Return: Transaction count[hex encoded unsigned integer]
-func (e *EthRPCClient) EthGetTransactionCount(Address string, Block string) (result []string, err error) {
+func (e *JsonRPCClient) EthGetTransactionCount(Address string, Block string) (result []string, err error) {
 	err = e.c.CallFor(&result, "eth_getTransactionCount", Address, Block)
 	return
 }
@@ -297,7 +298,7 @@ func (e *EthRPCClient) EthGetTransactionCount(Address string, Block string) (res
 // Address:hex encoded address
 // Block:Block number or tag
 // Return: hex encoded bytes
-func (e *EthRPCClient) EthGetCode(Address string, Block string) (result string, err error) {
+func (e *JsonRPCClient) EthGetCode(Address string, Block string) (result string, err error) {
 	err = e.c.CallFor(&result, "eth_getCode", Address, Block)
 	return
 }
@@ -306,7 +307,7 @@ func (e *EthRPCClient) EthGetCode(Address string, Block string) (result string, 
 // 签署并提交交易。
 // Transaction:Transaction object with sender
 // Return: 32 byte hex value
-func (e *EthRPCClient) EthSendTransaction(Transaction TransactionObjectWithSender) (result string, err error) {
+func (e *JsonRPCClient) EthSendTransaction(Transaction TransactionObjectWithSender) (result string, err error) {
 	err = e.c.CallFor(&result, "eth_sendTransaction", Transaction)
 	return
 }
@@ -315,7 +316,7 @@ func (e *EthRPCClient) EthSendTransaction(Transaction TransactionObjectWithSende
 // 提交未处理的交易。
 // Transaction:hex encoded bytes
 // Return: 32 byte hex value
-func (e *EthRPCClient) EthSendRawTransaction(Transaction string) (result string, err error) {
+func (e *JsonRPCClient) EthSendRawTransaction(Transaction string) (result string, err error) {
 	err = e.c.CallFor(&result, "eth_sendRawTransaction", Transaction)
 	return
 }
@@ -324,7 +325,7 @@ func (e *EthRPCClient) EthSendRawTransaction(Transaction string) (result string,
 // 返回有关事务哈希请求的事务的信息。
 // TransactionHash:32 byte hex value
 // Return: Transaction information
-func (e *EthRPCClient) EthGetTransactionByHash(TransactionHash string) (result TransactionInformation, err error) {
+func (e *JsonRPCClient) EthGetTransactionByHash(TransactionHash string) (result TransactionInformation, err error) {
 	err = e.c.CallFor(&result, "eth_getTransactionByHash", TransactionHash)
 	return
 }
@@ -334,7 +335,7 @@ func (e *EthRPCClient) EthGetTransactionByHash(TransactionHash string) (result T
 // BlockHash:32 byte hex value
 // TransactionIndex:hex encoded unsigned integer
 // Return: Transaction information
-func (e *EthRPCClient) EthGetTransactionByBlockHashAndIndex(BlockHash string, TransactionIndex string) (result TransactionInformation, err error) {
+func (e *JsonRPCClient) EthGetTransactionByBlockHashAndIndex(BlockHash string, TransactionIndex string) (result TransactionInformation, err error) {
 	err = e.c.CallFor(&result, "eth_getTransactionByBlockHashAndIndex", BlockHash, TransactionIndex)
 	return
 }
@@ -344,7 +345,7 @@ func (e *EthRPCClient) EthGetTransactionByBlockHashAndIndex(BlockHash string, Tr
 // BlockNumber:hex encoded unsigned integer
 // TransactionIndex:hex encoded unsigned integer
 // Return: Transaction information
-func (e *EthRPCClient) EthGetTransactionByBlockNumberAndIndex(BlockNumber string, TransactionIndex string) (result TransactionInformation, err error) {
+func (e *JsonRPCClient) EthGetTransactionByBlockNumberAndIndex(BlockNumber string, TransactionIndex string) (result TransactionInformation, err error) {
 	err = e.c.CallFor(&result, "eth_getTransactionByBlockNumberAndIndex", BlockNumber, TransactionIndex)
 	return
 }
@@ -352,7 +353,7 @@ func (e *EthRPCClient) EthGetTransactionByBlockNumberAndIndex(BlockNumber string
 // EthGetTransactionReceipt Returns the receipt of a transaction by transaction hash.
 // 按事务哈希返回事务的收据。
 // TransactionHash:32 byte hex value
-func (e *EthRPCClient) EthGetTransactionReceipt(TransactionHash string) (result EthGetTransactionReceiptResult, err error) {
+func (e *JsonRPCClient) EthGetTransactionReceipt(TransactionHash string) (result EthGetTransactionReceiptResult, err error) {
 	err = e.c.CallFor(&result, "eth_getTransactionReceipt", TransactionHash)
 	return
 }

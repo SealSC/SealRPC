@@ -18,11 +18,11 @@ var (
 )
 
 type JsonRPCService struct {
-	ser  *EthService
+	ser  interface{}
 	serV reflect.Value
 }
 
-func NewJsonRPCService(ser *EthService) *JsonRPCService {
+func NewJsonRPCService(ser interface{}) *JsonRPCService {
 	return &JsonRPCService{ser: ser, serV: reflect.ValueOf(ser)}
 }
 
@@ -53,7 +53,7 @@ func (j *JsonRPCService) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	up := CamelCase(request.Method)
 	method := j.serV.MethodByName(up)
-	if !method.IsValid() {
+	if !method.IsValid() && method.Kind() != reflect.Func {
 		j.ReturnErr(MethodNotFoundErr, w)
 		return
 	}
