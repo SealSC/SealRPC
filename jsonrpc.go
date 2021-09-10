@@ -51,7 +51,7 @@ func (j *JsonRPCService) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	up := toUp(request.Method)
+	up := CamelCase(request.Method)
 	method := j.serV.MethodByName(up)
 	if !method.IsValid() {
 		j.ReturnErr(MethodNotFoundErr, w)

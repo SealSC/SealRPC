@@ -1,6 +1,6 @@
 package SealRPC
 
-func toUp(s string) string {
+func CamelCase(s string) string {
 	var cs []rune
 	var lowLine bool
 	for i, c := range s {
