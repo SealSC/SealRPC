@@ -1,7 +1,6 @@
 package SealRPC
 
 import (
-	"fmt"
 	"github.com/ybbus/jsonrpc/v2"
 )
 
@@ -356,76 +355,4 @@ func (e *EthRPCClient) EthGetTransactionByBlockNumberAndIndex(BlockNumber string
 func (e *EthRPCClient) EthGetTransactionReceipt(TransactionHash string) (result EthGetTransactionReceiptResult, err error) {
 	err = e.c.CallFor(&result, "eth_getTransactionReceipt", TransactionHash)
 	return
-}
-
-func main() {
-	client := NewEthRPCClient("http://127.0.0.1:8545")
-	number, err := client.EthGetBlockByNumber("0x1", true)
-	fmt.Println(number, err)
-	index, err := client.EthGetBlockTransactionCountByHash("0xe9dc52ef255d3b8ee11b35acc4b25f41ce096c71392aafe58907df9e1dbaaa4b")
-	fmt.Println(index, err)
-}
-
-type Server struct {
-	methodName string
-	params     []interface{}
-	resultType interface{}
-}
-
-type evm struct {
-	//返回当前以太坊协议版本。
-	//返回一个对象，其中包含有关同步状态的数据或false。
-	//返回客户端coinbase地址。
-	//返回客户端拥有的地址列表。
-	//返回最近的块数。
-	//立即执行新的消息调用，而不在块链上创建事务。(执行交易)
-	gaps struct {
-		//生成并返回允许交易完成所需的天然气量的估计值。
-		//返回每种气体的当前价格（单位：wei）。
-		//小费历史数据
-	}
-	//根据过滤器选项创建过滤器对象，以在状态更改（日志）时发出通知。
-	//在节点中创建过滤器，以在新块到达时通知。
-	//在节点中创建筛选器，以便在新的挂起事务到达时通知。
-	//卸载具有给定id的筛选器。
-	filter struct {
-		//筛选器的轮询方法，该方法返回自上次轮询以来发生的日志数组。
-		//返回与给定id的筛选器匹配的所有日志的数组。
-		//返回与给定id的筛选器匹配的所有日志的数组。
-	}
-	//返回客户端是否正在积极挖掘新块
-	//返回节点每秒使用的哈希数。
-	//返回当前块的散列、种子散列和要满足的边界条件（“目标”）。
-	//用于提交工作证明解决方案。
-	//用于提交挖掘哈希率。
-
-	Address struct {
-		//返回提供数据上的EIP-191签名。
-		//返回给定地址的帐户余额
-		//从给定地址的存储位置返回值。
-		//返回从某个地址发送的事务数。
-		//返回给定地址处的代码。
-	}
-	Block struct {
-		//按哈希返回有关块的信息。
-		//按块的编号返回有关块的信息。
-
-		//签署并提交交易。
-		//提交未处理的交易。
-
-		//返回块中与给定块号匹配的交易数。
-		//返回块中与给定块号匹配的交易数。
-		//从匹配给定块哈希块返回块交易的数量。
-		Transaction struct {
-			//返回由指定帐户签名的RLP编码事务。
-			//返回有关事务哈希请求的事务的信息。
-			//按块哈希和事务索引位置返回有关交易的信息。
-			//按块号和事务索引位置返回有关事务的信息。
-			//按事务哈希返回事务的收据。
-		}
-
-		//从与给定块哈希匹配的块返回块中的uncles。
-		uncles struct {
-		}
-	}
 }
