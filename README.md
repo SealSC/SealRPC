@@ -1,8 +1,11 @@
 # SealRPC
 
-
 ## About
+
 SealRPC service and client
+
+- [ ] jsonRPC1.0 supported
+- [x] jsonRPC2.0 supported
 
 ## Files
 
@@ -27,6 +30,7 @@ SealRPC service and client
 ## Use
 
 ### server
+
 ```go
 //1. new EthService{}
 ser := &SealRPC.EthService{}
@@ -57,9 +61,9 @@ index, err := client.EthGetBlockTransactionCountByHash("0xe9dc52ef255d3b8ee11b35
 fmt.Println(index, err)
 ```
 
-##Routing rules for jsonRPC functions
+## Routing rules for jsonRPC functions
 
-1. Read jsonRPC `RPCRequest.method` 
+1. Read jsonRPC `RPCRequest.method`
 2. Call `tool.toUp(methodName)` to perform (camel-case) operation on methodName
 3. Call `reflect.ValueOf().MethodByName` to get the reflect.method variable
 4. Assemble params and call the function `reflect.Method.Call()` to return returns
