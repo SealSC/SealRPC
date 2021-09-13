@@ -6,44 +6,155 @@ import (
 )
 
 type EthInterface interface {
+	// EthGetBlockByHash Returns information about a block by hash.
+	// BlockHash:32 byte hex value
+	// HydratedTransactions:hydrated
 	EthGetBlockByHash(BlockHash string, HydratedTransactions bool) (result Block, err error)
+	// EthGetBlockByNumber Returns information about a block by number.
+	// BlockNumber:hex encoded unsigned integer
+	// HydratedTransactions:hydrated
 	EthGetBlockByNumber(BlockNumber string, HydratedTransactions bool) (result Block, err error)
+	// EthGetBlockTransactionCountByHash Returns the number of transactions in a block from a block matching the given block hash.
+	// BlockHash:32 byte hex value
+	// Return: Transaction count[hex encoded unsigned integer]
 	EthGetBlockTransactionCountByHash(BlockHash string) (result []string, err error)
+	// EthGetBlockTransactionCountByNumber Returns the number of transactions in a block matching the given block number.
+	// BlockNumber:hex encoded unsigned integer
+	// Return: Transaction count[hex encoded unsigned integer]
 	EthGetBlockTransactionCountByNumber(BlockNumber string) (result []string, err error)
+	// EthGetUncleCountByBlockHash Returns the number of uncles in a block from a block matching the given block hash.
+	// BlockHash:32 byte hex value
+	// Return: Uncle count[hex encoded unsigned integer]
 	EthGetUncleCountByBlockHash(BlockHash string) (result []string, err error)
+	// EthGetUncleCountByBlockNumber Returns the number of transactions in a block matching the given block number.
+	// BlockNumber:hex encoded unsigned integer
+	// Return: Uncle count[hex encoded unsigned integer]
 	EthGetUncleCountByBlockNumber(BlockNumber string) (result []string, err error)
+	// EthProtocolVersion Returns the current ethereum protocol version.
+	// Return: version
 	EthProtocolVersion() (result string, err error)
+	// EthSyncing Returns an object with data about the sync status or false.
 	EthSyncing() (result Syncing, err error)
+	// EthCoinbase Returns the client coinbase address.
+	// Return: hex encoded address
 	EthCoinbase() (result string, err error)
+	// EthAccounts Returns a list of addresses owned by client.
+	// Returns: Accounts[hex encoded address]
 	EthAccounts() (result []string, err error)
+	// EthBlockNumber Returns the number of most recent block.
+	// Return: hex encoded unsigned integer
 	EthBlockNumber() (result string, err error)
+	// EthCall Executes a new message call immediately without creating a transaction on the block chain.
+	// Transaction:Transaction object with sender
+	// Return: hex encoded bytes
 	EthCall(Transaction TransactionObjectWithSender) (result string, err error)
+	// EthEstimateGas Generates and returns an estimate of how much gas is necessary to allow the transaction to complete.
+	// Transaction:Transaction object with sender
+	// Return: hex encoded unsigned integer
 	EthEstimateGas(Transaction TransactionObjectWithSender) (result string, err error)
+	// EthGasPrice Returns the current price per gas in wei.
+	// Return: Gas price
 	EthGasPrice() (result string, err error)
+	// EthFeeHistory
+	//
+	// BlockCount:hex encoded unsigned integer
+	// NewestBlock:Block number or tag
+	// RewardPercentiles:rewardPercentiles
 	EthFeeHistory(BlockCount string, NewestBlock string, RewardPercentiles []int) (result EthFeeHistoryResult, err error)
+	// EthNewFilter Creates a filter object, based on filter options, to notify when the state changes (logs).
+	// Filter:filter
+	// Return: hex encoded unsigned integer
 	EthNewFilter(Filter Filter) (result string, err error)
+	// EthNewBlockFilter Creates a filter in the node, to notify when a new block arrives.
+	// Return: hex encoded unsigned integer
 	EthNewBlockFilter() (result string, err error)
+	// EthNewPendingTransactionFilter Creates a filter in the node, to notify when new pending transactions arrive.
+	// Return: hex encoded unsigned integer
 	EthNewPendingTransactionFilter() (result string, err error)
+	// EthUninstallFilter Uninstalls a filter with given id.
+	// FilterIdentifier:hex encoded unsigned integer
 	EthUninstallFilter(FilterIdentifier string) (result bool, err error)
+	// EthGetFilterChanges Polling method for a filter, which returns an array of logs which occurred since last poll.
+	// FilterIdentifier:hex encoded unsigned integer
 	EthGetFilterChanges(FilterIdentifier string) (result LogResult, err error)
+	// EthGetFilterLogs Returns an array of all logs matching filter with given id.
+	// FilterIdentifier:hex encoded unsigned integer
 	EthGetFilterLogs(FilterIdentifier string) (result LogResult, err error)
+	// EthGetLogs Returns an array of all logs matching filter with given id.
+	// Filter:filter
 	EthGetLogs(Filter Filter) (result LogResult, err error)
+	// EthMining Returns whether the client is actively mining new blocks.
+	// Return: miningStatus
 	EthMining() (result bool, err error)
+	// EthHashrate Returns the number of hashes per second that the node is mining with.
+	// Return: Hashrate
 	EthHashrate() (result string, err error)
+	// EthGetWork Returns the hash of the current block, the seedHash, and the boundary condition to be met (“target”).
+	// Return: Proof-of-work hash
 	EthGetWork() (result []string, err error)
+	// EthSubmitWork Used for submitting a proof-of-work solution.
+	// ProofOfWorkHash:32 hex encoded bytes
+	// SeedHash:32 hex encoded bytes
+	// Difficulty:32 hex encoded bytes
 	EthSubmitWork(ProofOfWorkHash string, SeedHash string, Difficulty string) (result bool, err error)
+	// EthSubmitHashrate Used for submitting mining hashrate.
+	// Hashrate:32 hex encoded bytes
+	// ID:32 hex encoded bytes
 	EthSubmitHashrate(Hashrate string, ID string) (result bool, err error)
+	// EthSign Returns an EIP-191 signature over the provided data.
+	// Address:hex encoded address
+	// Message:hex encoded bytes
+	// Return: 65 hex encoded bytes
 	EthSign(Address string, Message string) (result string, err error)
+	// EthSignTransaction Returns an RLP encoded transaction signed by the specified account.
+	// Transaction:Transaction object with sender
+	// Return: hex encoded bytes
 	EthSignTransaction(Transaction TransactionObjectWithSender) (result string, err error)
+	// EthGetBalance Returns the balance of the account of given address.
+	// Address:hex encoded address
+	// Block:Block number or tag
+	// Return: hex encoded unsigned integer
 	EthGetBalance(Address string, Block string) (result string, err error)
+	// EthGetStorage Returns the value from a storage position at a given address.
+	// Address:hex encoded address
+	// StorageSlot:hex encoded unsigned integer
+	// Block:Block number or tag
+	// Return: hex encoded bytes
 	EthGetStorage(Address string, StorageSlot string, Block string) (result string, err error)
+	// EthGetTransactionCount Returns the number of transactions sent from an address.
+	// Address:hex encoded address
+	// Block:Block number or tag
+	// Return: Transaction count[hex encoded unsigned integer]
 	EthGetTransactionCount(Address string, Block string) (result []string, err error)
+	// EthGetCode Returns code at a given address.
+	// Address:hex encoded address
+	// Block:Block number or tag
+	// Return: hex encoded bytes
 	EthGetCode(Address string, Block string) (result string, err error)
+	// EthSendTransaction Signs and submits a transaction.
+	// Transaction:Transaction object with sender
+	// Return: 32 byte hex value
 	EthSendTransaction(Transaction TransactionObjectWithSender) (result string, err error)
+	// EthSendRawTransaction Submits a raw transaction.
+	// Transaction:hex encoded bytes
+	// Return: 32 byte hex value
 	EthSendRawTransaction(Transaction string) (result string, err error)
+	// EthGetTransactionByHash Returns the information about a transaction requested by transaction hash.
+	// TransactionHash:32 byte hex value
+	// Return: Transaction information
 	EthGetTransactionByHash(TransactionHash string) (result TransactionInformation, err error)
+	// EthGetTransactionByBlockHashAndIndex Returns information about a transaction by block hash and transaction index position.
+	// BlockHash:32 byte hex value
+	// TransactionIndex:hex encoded unsigned integer
+	// Return: Transaction information
 	EthGetTransactionByBlockHashAndIndex(BlockHash string, TransactionIndex string) (result TransactionInformation, err error)
+	// EthGetTransactionByBlockNumberAndIndex Returns information about a transaction by block number and transaction index position.
+	// BlockNumber:hex encoded unsigned integer
+	// TransactionIndex:hex encoded unsigned integer
+	// Return: Transaction information
 	EthGetTransactionByBlockNumberAndIndex(BlockNumber string, TransactionIndex string) (result TransactionInformation, err error)
+	// EthGetTransactionReceipt Returns the receipt of a transaction by transaction hash.
+	// TransactionHash:32 byte hex value
 	EthGetTransactionReceipt(TransactionHash string) (result EthGetTransactionReceiptResult, err error)
 }
 
