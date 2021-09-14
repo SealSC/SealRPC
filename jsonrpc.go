@@ -14,7 +14,12 @@ var (
 	MethodNotFoundErr = RPCError{Code: -32601, Message: "Method not found"}
 	InvalidParamsErr  = RPCError{Code: -32602, Message: "Invalid params"}
 	InternalErrorErr  = RPCError{Code: -32603, Message: "Internal error"}
-	ServerErrorErr    = RPCError{Code: -3200, Message: "Server error"}
+	ServerErrorErr    = RPCError{Code: CommonJSONRpcErrCode, Message: "Server error"}
+	MultipleReturnErr = RPCError{Code: -3201, Message: "Three or more return values are not supported"}
+)
+
+const (
+	CommonJSONRpcErrCode = -3200
 )
 
 type JsonRPCService struct {
@@ -31,7 +36,7 @@ func (j *JsonRPCService) Run(addr string) error {
 }
 func (j *JsonRPCService) ReturnErr(e RPCError, w io.Writer) {
 	response := RPCResponse{
-		Error: &e,
+		Error: e,
 	}
 	_ = json.NewEncoder(w).Encode(response)
 }
@@ -72,15 +77,24 @@ func (j *JsonRPCService) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	returns := method.Call(params)
 	switch len(returns) {
+	case 0:
 	case 1:
-		if err, ok := returns[0].Interface().(error); ok && err != nil {
-			response.Error = &RPCError{Code: -3200, Message: err.Error()}
+		data := returns[0].Interface()
+		err, ok := data.(error)
+		if ok {
+			if err != nil {
+				response.Error = RPCError{Code: CommonJSONRpcErrCode, Message: err.Error()}
+			}
+		} else {
+			response.Result = data
 		}
 	case 2:
 		response.Result = returns[0].Interface()
 		if err, ok := returns[1].Interface().(error); ok && err != nil {
-			response.Error = &RPCError{Code: -3200, Message: err.Error()}
+			response.Error = RPCError{Code: CommonJSONRpcErrCode, Message: err.Error()}
 		}
+	default:
+		response.Error = MultipleReturnErr
 	}
 	_ = json.NewEncoder(w).Encode(response)
 	w.WriteHeader(http.StatusOK)
@@ -106,7 +120,7 @@ func (R RPCRequest) Invalid() bool {
 type RPCResponse struct {
 	JSONRPC string      `json:"jsonrpc"`
 	Result  interface{} `json:"result,omitempty"`
-	Error   *RPCError   `json:"error,omitempty"`
+	Error   RPCError    `json:"error,omitempty"`
 	ID      int         `json:"id"`
 }
 
