@@ -267,7 +267,12 @@ func (s *StringArr) UnmarshalJSON(data []byte) error {
 		*s = []string{temp}
 		return nil
 	} else {
-		return json.Unmarshal(data, s)
+		var temp []string
+		if err := json.Unmarshal(data, &temp); err != nil {
+			return err
+		}
+		*s = temp
+		return nil
 	}
 }
 
@@ -326,24 +331,28 @@ type Transactions interface {
 	//TODO 需要适配Transaction多种类型
 }
 
-type Syncing struct {
+type sync struct {
 	CurrentBlock  string `json:"currentBlock"`  //  Current block
 	HighestBlock  string `json:"highestBlock"`  //  Highest block
 	StartingBlock string `json:"startingBlock"` //  Starting block
-	ISSyncing     bool   `json:"is_syncing"`
+}
+type Syncing struct {
+	Sync      sync
+	ISSyncing bool
 }
 
 func (e Syncing) MarshalJSON() ([]byte, error) {
 	if !e.ISSyncing {
 		return json.Marshal(e.ISSyncing)
 	}
-	return json.Marshal(e)
+	return json.Marshal(e.Sync)
 }
 
 func (e *Syncing) UnmarshalJSON(bytes []byte) error {
-	if err := json.Unmarshal(bytes, &e); err != nil {
+	if err := json.Unmarshal(bytes, &e.Sync); err != nil {
 		return json.Unmarshal(bytes, &e.ISSyncing)
 	}
+	e.ISSyncing = true
 	return nil
 }
 
@@ -428,6 +437,7 @@ type LogResult struct {
 func (l *LogResult) UnmarshalJSON(bytes []byte) error {
 	err := json.Unmarshal(bytes, &l.Arr)
 	if err != nil {
+		l.Arr = nil
 		return json.Unmarshal(bytes, &l.Logs)
 	}
 	return nil
