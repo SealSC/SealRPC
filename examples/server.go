@@ -11,7 +11,7 @@ func main() {
 		//Implementation you codes .....
 		return
 	}
-	service := SealRPC.NewJsonRPCService(ser)
+	service := SealRPC.NewJsonRPCService("/", ser)
 	err := service.Run(":8080")
 	if err != nil {
 		log.Fatalln("service run err:", err)
