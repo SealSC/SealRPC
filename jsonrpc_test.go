@@ -10,6 +10,33 @@ import (
 	"testing"
 )
 
+func TestJsonRPCService_hitPath(t *testing.T) {
+	type args struct {
+		Path    string
+		reqPath string
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{"0", args{"/", ""}, true},
+		{"0", args{"", "/"}, true},
+		{"0", args{"/s", "s"}, true},
+		{"0", args{"s", "/s"}, true},
+		{"0", args{"/s", "/  s"}, false},
+		{"0", args{"/  s", "/%20%20%20s"}, false},
+		{"0", args{"/  s", "/%20%20s"}, true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := NewJsonRPCService(tt.args.Path, nil).hitPath(tt.args.reqPath); got != tt.want {
+				t.Errorf("JsonRPCService.hitPath(%v,%v) = %v, want %v", tt.args.Path, tt.args.reqPath, got, tt.want)
+			}
+		})
+	}
+}
+
 type TestServer struct{}
 
 func (t *TestServer) MethodParameterNil() bool {
@@ -27,7 +54,7 @@ func (t *TestServer) MethodMultipleReturn() (bool, int, error) { return true, 99
 
 func TestJsonRPCService_Run(t *testing.T) {
 	testServer := TestServer{}
-	handler := NewJsonRPCService(&testServer)
+	handler := NewJsonRPCService("/rpc", &testServer)
 	server := httptest.NewServer(handler)
 	client := server.Client()
 	var JsonRpcClientDo = func(req RPCRequest) (resp RPCResponse, err error) {
@@ -39,7 +66,7 @@ func TestJsonRPCService_Run(t *testing.T) {
 			err = fmt.Errorf("json marshal err:%v", err)
 			return
 		}
-		if httpResp, err = client.Post(server.URL, "application/json", bytes.NewBuffer(body)); err != nil {
+		if httpResp, err = client.Post(server.URL+"/"+handler.path, "application/json", bytes.NewBuffer(body)); err != nil {
 			err = fmt.Errorf("client post request err:%v", err)
 			return
 		}

@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"reflect"
 	"strconv"
+	"strings"
+	"net/url"
 )
 
 var (
@@ -23,12 +25,19 @@ const (
 )
 
 type JsonRPCService struct {
-	ser  interface{}
-	serV reflect.Value
+	path      string
+	pathClean bool
+	ser       interface{}
+	serV      reflect.Value
 }
 
-func NewJsonRPCService(ser interface{}) *JsonRPCService {
-	return &JsonRPCService{ser: ser, serV: reflect.ValueOf(ser)}
+func NewJsonRPCService(pathS string, ser interface{}) *JsonRPCService {
+	return &JsonRPCService{
+		ser:       ser,
+		path:      strings.Trim(strings.TrimSpace(pathS), "/"),
+		pathClean: true,
+		serV:      reflect.ValueOf(ser),
+	}
 }
 
 func (j *JsonRPCService) Run(addr string) error {
@@ -40,12 +49,29 @@ func (j *JsonRPCService) ReturnErr(e RPCError, w io.Writer) {
 	}
 	_ = json.NewEncoder(w).Encode(response)
 }
+func (j *JsonRPCService) hitPath(reqPath string) bool {
+	if !j.pathClean {
+		j.path = strings.Trim(strings.TrimSpace(j.path), "/")
+		j.pathClean = true
+	}
+	unescape, err := url.PathUnescape(reqPath)
+	if err != nil {
+		return false
+	}
+	reqPath = unescape
+	space := strings.Trim(strings.TrimSpace(reqPath), "/")
+	return space == j.path
+}
 
 func (j *JsonRPCService) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	var (
 		request  RPCRequest
 		response RPCResponse
 	)
+	if !j.hitPath(r.URL.Path) {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
 		j.ReturnErr(ParseErr, w)
